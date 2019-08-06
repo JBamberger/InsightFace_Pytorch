@@ -16,7 +16,7 @@ import bcolz
 
 class face_learner(object):
     def __init__(self, conf, inference=False):
-        print(conf)
+        # print(conf)
         if conf.use_mobilfacenet:
             self.model = MobileFaceNet(conf.embedding_size).to(conf.device)
             print('MobileFaceNet model generated')
@@ -48,7 +48,7 @@ class face_learner(object):
                                     {'params': paras_only_bn}
                                 ], lr = conf.lr, momentum = conf.momentum)
             print(self.optimizer)
-#             self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, patience=40, verbose=True)
+            # self.scheduler = optim.lr_scheduler.ReduceLROnPlateau(self.optimizer, patience=40, verbose=True)
 
             print('optimizers generated')    
             self.board_loss_every = len(self.loader)//100
@@ -88,9 +88,9 @@ class face_learner(object):
         self.writer.add_scalar('{}_accuracy'.format(db_name), accuracy, self.step)
         self.writer.add_scalar('{}_best_threshold'.format(db_name), best_threshold, self.step)
         self.writer.add_image('{}_roc_curve'.format(db_name), roc_curve_tensor, self.step)
-#         self.writer.add_scalar('{}_val:true accept ratio'.format(db_name), val, self.step)
-#         self.writer.add_scalar('{}_val_std'.format(db_name), val_std, self.step)
-#         self.writer.add_scalar('{}_far:False Acceptance Ratio'.format(db_name), far, self.step)
+        # self.writer.add_scalar('{}_val:true accept ratio'.format(db_name), val, self.step)
+        # self.writer.add_scalar('{}_val_std'.format(db_name), val_std, self.step)
+        # self.writer.add_scalar('{}_far:False Acceptance Ratio'.format(db_name), far, self.step)
         
     def evaluate(self, conf, carray, issame, nrof_folds = 5, tta = False):
         self.model.eval()

@@ -182,7 +182,8 @@ def correct_bboxes(bboxes, width, height):
     """
 
     x1, y1, x2, y2 = [bboxes[:, i] for i in range(4)]
-    w, h = x2 - x1 + 1.0,  y2 - y1 + 1.0
+    w = x2 - x1 + 1.0
+    h = y2 - y1 + 1.0
     num_boxes = bboxes.shape[0]
 
     # 'e' stands for end
@@ -194,8 +195,10 @@ def correct_bboxes(bboxes, width, height):
     # in the image.
     # (dx, dy, edx, edy) are coordinates of the box in the cutout
     # from the image.
-    dx, dy = np.zeros((num_boxes,)), np.zeros((num_boxes,))
-    edx, edy = w.copy() - 1.0, h.copy() - 1.0
+    dx = np.zeros((num_boxes,))
+    dy = np.zeros((num_boxes,))
+    edx = w.copy() - 1.0
+    edy = h.copy() - 1.0
 
     # if box's bottom right corner is too far right
     ind = np.where(ex > width - 1.0)[0]

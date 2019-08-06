@@ -142,8 +142,8 @@ def get_reference_facial_points(output_size=None,
     scale_factor = size_bf_outer_pad[0].astype(np.float32) / tmp_crop_size[0]
     #print('              resize scale_factor = ', scale_factor)
     tmp_5pts = tmp_5pts * scale_factor
-#    size_diff = tmp_crop_size * (scale_factor - min(scale_factor))
-#    tmp_5pts = tmp_5pts + size_diff / 2
+    # size_diff = tmp_crop_size * (scale_factor - min(scale_factor))
+    # tmp_5pts = tmp_5pts + size_diff / 2
     tmp_crop_size = size_bf_outer_pad
     #print('              crop_size = ', tmp_crop_size)
     #print('              reference_5pts = ', tmp_5pts)
@@ -183,15 +183,15 @@ def get_affine_transform_matrix(src_pts, dst_pts):
     src_pts_ = np.hstack([src_pts, ones])
     dst_pts_ = np.hstack([dst_pts, ones])
 
-#    #print(('src_pts_:\n' + str(src_pts_))
-#    #print(('dst_pts_:\n' + str(dst_pts_))
+    #print(('src_pts_:\n' + str(src_pts_))
+    #print(('dst_pts_:\n' + str(dst_pts_))
 
     A, res, rank, s = np.linalg.lstsq(src_pts_, dst_pts_)
 
-#    #print(('np.linalg.lstsq return A: \n' + str(A))
-#    #print(('np.linalg.lstsq return res: \n' + str(res))
-#    #print(('np.linalg.lstsq return rank: \n' + str(rank))
-#    #print(('np.linalg.lstsq return s: \n' + str(s))
+    #print(('np.linalg.lstsq return A: \n' + str(A))
+    #print(('np.linalg.lstsq return res: \n' + str(res))
+    #print(('np.linalg.lstsq return rank: \n' + str(rank))
+    #print(('np.linalg.lstsq return s: \n' + str(s))
 
     if rank == 3:
         tfm = np.float32([
@@ -262,8 +262,7 @@ def warp_and_crop_face(src_img,
     ref_pts = np.float32(reference_pts)
     ref_pts_shp = ref_pts.shape
     if max(ref_pts_shp) < 3 or min(ref_pts_shp) != 2:
-        raise FaceWarpException(
-            'reference_pts.shape must be (K,2) or (2,K) and K>2')
+        raise FaceWarpException('reference_pts.shape must be (K,2) or (2,K) and K>2')
 
     if ref_pts_shp[0] == 2:
         ref_pts = ref_pts.T
@@ -271,33 +270,20 @@ def warp_and_crop_face(src_img,
     src_pts = np.float32(facial_pts)
     src_pts_shp = src_pts.shape
     if max(src_pts_shp) < 3 or min(src_pts_shp) != 2:
-        raise FaceWarpException(
-            'facial_pts.shape must be (K,2) or (2,K) and K>2')
+        raise FaceWarpException('facial_pts.shape must be (K,2) or (2,K) and K>2')
 
     if src_pts_shp[0] == 2:
         src_pts = src_pts.T
 
-#    #print('--->src_pts:\n', src_pts
-#    #print('--->ref_pts\n', ref_pts
-
     if src_pts.shape != ref_pts.shape:
-        raise FaceWarpException(
-            'facial_pts and reference_pts must have the same shape')
+        raise FaceWarpException('facial_pts and reference_pts must have the same shape')
 
     if align_type is 'cv2_affine':
         tfm = cv2.getAffineTransform(src_pts[0:3], ref_pts[0:3])
-#        #print(('cv2.getAffineTransform() returns tfm=\n' + str(tfm))
     elif align_type is 'affine':
         tfm = get_affine_transform_matrix(src_pts, ref_pts)
-#        #print(('get_affine_transform_matrix() returns tfm=\n' + str(tfm))
     else:
         tfm = get_similarity_transform_for_cv2(src_pts, ref_pts)
-#        #print(('get_similarity_transform_for_cv2() returns tfm=\n' + str(tfm))
-
-#    #print('--->Transform matrix: '
-#    #print(('type(tfm):' + str(type(tfm)))
-#    #print(('tfm.dtype:' + str(tfm.dtype))
-#    #print( tfm
 
     face_img = cv2.warpAffine(src_img, tfm, (crop_size[0], crop_size[1]))
 

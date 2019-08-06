@@ -71,19 +71,14 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
     M = xy.shape[0]
     x = xy[:, 0].reshape((-1, 1))  # use reshape to keep a column vector
     y = xy[:, 1].reshape((-1, 1))  # use reshape to keep a column vector
-    # print('--->x, y:\n', x, y
 
     tmp1 = np.hstack((x, y, np.ones((M, 1)), np.zeros((M, 1))))
     tmp2 = np.hstack((y, -x, np.zeros((M, 1)), np.ones((M, 1))))
     X = np.vstack((tmp1, tmp2))
-    # print('--->X.shape: ', X.shape
-    # print('X:\n', X
 
     u = uv[:, 0].reshape((-1, 1))  # use reshape to keep a column vector
     v = uv[:, 1].reshape((-1, 1))  # use reshape to keep a column vector
     U = np.vstack((u, v))
-    # print('--->U.shape: ', U.shape
-    # print('U:\n', U
 
     # We know that X * r = U
     if rank(X) >= 2 * K:
@@ -91,8 +86,6 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
         r = np.squeeze(r)
     else:
         raise Exception('cp2tform:twoUniquePointsReq')
-
-    # print('--->r:\n', r
 
     sc = r[0]
     ss = r[1]
@@ -104,12 +97,7 @@ def findNonreflectiveSimilarity(uv, xy, options=None):
         [ss,  sc, 0],
         [tx,  ty, 1]
     ])
-
-    # print('--->Tinv:\n', Tinv
-
     T = inv(Tinv)
-    # print('--->T:\n', T
-
     T[:, 2] = np.array([0, 0, 1])
 
     return T, Tinv
@@ -119,14 +107,13 @@ def findSimilarity(uv, xy, options=None):
 
     options = {'K': 2}
 
-#    uv = np.array(uv)
-#    xy = np.array(xy)
+    # uv = np.array(uv)
+    # xy = np.array(xy)
 
     # Solve for trans1
     trans1, trans1_inv = findNonreflectiveSimilarity(uv, xy, options)
 
     # Solve for trans2
-
     # manually reflect the xy data across the Y-axis
     xyR = xy
     xyR[:, 0] = -1 * xyR[:, 0]
@@ -139,7 +126,6 @@ def findSimilarity(uv, xy, options=None):
         [0, 1, 0],
         [0, 0, 1]
     ])
-
     trans2 = np.dot(trans2r, TreflectY)
 
     # Figure out if trans1 or trans2 is better
