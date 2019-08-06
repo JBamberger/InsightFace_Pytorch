@@ -143,14 +143,22 @@ class MobileFaceNet(Module):
 if __name__ == '__main__':
     conf = get_config(False)
     model = MobileFaceNet(conf.embedding_size).to(conf.device)
-    model.load_state_dict(torch.load(conf.save_path/'model_final.pth'))
+    l_out = torch.load(conf.save_path/'model_final.pth')
+    model.load_state_dict(l_out)
+    # print (l_out)
+    # print(model)
+    # print(model.state_dict())
+
     model.eval()
 
-    img = Image.open(conf.save_path/'test.jpg')
-    example = conf.test_transform(img).to(conf.device).unsqueeze(0)
-    # print(model())
+    # img = Image.open(conf.save_path/'test.jpg')
+    # example = conf.test_transform(img).to(conf.device).unsqueeze(0)
+    # example = torch.ones([1,3,112,112]).to(conf.device)
+    # print(model(example))
 
-    traced_script_module = torch.jit.trace(model, example)
+    print(example.size())
 
-    # print(traced_script_module)
-    traced_script_module.save(str(conf.save_path/'traced-model.pt'))
+    # traced_script_module = torch.jit.trace(model, example)
+
+    # # print(traced_script_module)
+    # traced_script_module.save(str(conf.save_path/'traced-model.pt'))
